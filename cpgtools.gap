@@ -484,20 +484,13 @@ SortByCoset:=function(quolist)
 	return Immutable(Compacted(cosets));
 end;
 
-
-
-
-
-
-
-
-
-
 #
-###	Old; Needs cleaning up.
+#	wordlist, string, string
+#	
+#	each string of one character, used as letters to generate words
 #
 
-MakeWord:=function(wordlist)
+MakeWord:=function(wordlist, str1, str0)
 	local word, count, i;
 	word:="";
 	if Length(wordlist)<>0 then
@@ -510,9 +503,9 @@ MakeWord:=function(wordlist)
 				fi;
 				count:=1;
 				if wordlist[i]=0 then
-					word:=Concatenation(word,"x");
+					word:=Concatenation(word,str0);
 				else
-					word:=Concatenation(word,"a");
+					word:=Concatenation(word,str1);
 				fi;
 			fi;
 			if count<>1 and (i=Length(wordlist) or wordlist[i]<>wordlist[i+1]) then
@@ -523,9 +516,28 @@ MakeWord:=function(wordlist)
 	return word;
 end;
 
+############	Below this line for new functions to replace old ones	########
 
+#
+#	To replace FixedPoints
+#	U, word (not a string, but a word)
+#
 
-
+CentralizingIndices := function(U, word)
+	local cent, wordindex, i, iwordlist, index1, iindex, index2;
+	cent := [1];
+	wordindex := TracedCosetFpGroup(U[1],word,1);
+	for i in [2..Size(U[1][1])] do
+		iwordlist := MakeWordlist(U,i);
+		index1 := TraceWordlist(U, iwordlist, wordindex);
+		iindex := TraceWordlist(U, iwordlist);
+		index2 := TracedCosetFpGroup(U[1],word,iindex);
+		if index1 = index2 then
+			Add(cent, iindex);
+		fi;
+	od;
+	return cent;
+end;
 
 
 ############	Below this line requires modification or testing	############
