@@ -520,23 +520,18 @@ end;
 
 #
 #	To replace FixedPoints
-#	U, word (not a string, but a word)
+#	U[, power] (default: power = 1)
 #
 
-CentralizingIndices := function(U, word)
-	local cent, wordindex, i, iwordlist, index1, iindex, index2;
-	cent := [1];
-	wordindex := TracedCosetFpGroup(U[1],word,1);
-	for i in [2..Size(U[1][1])] do
-		iwordlist := MakeWordlist(U,i);
-		index1 := TraceWordlist(U, iwordlist, wordindex);
-		iindex := TraceWordlist(U, iwordlist);
-		index2 := TracedCosetFpGroup(U[1],word,iindex);
-		if index1 = index2 then
-			Add(cent, iindex);
-		fi;
-	od;
-	return cent;
+CentralizingIndices := function(arg)
+	local U, pow;
+	U := arg[1];
+	if IsBound(arg[2]) then
+		pow := arg[2];
+	else
+		pow := 1;
+	fi;
+	return FixedPoints(U, pow);
 end;
 
 
