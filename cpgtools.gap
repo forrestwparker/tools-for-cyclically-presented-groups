@@ -18,8 +18,6 @@ MakeOrbit:=function(arg)
 	return Immutable(orbit);
 end;
 
-
-
 #
 # 	U [, row (number)]	(default: row = 1)
 #
@@ -54,8 +52,6 @@ OrbitSizes:=function(arg)
 	return Immutable(orbitsizelist);
 end;
 
-
-
 #
 #	M
 #
@@ -63,8 +59,6 @@ end;
 ShiftOrder:=function(M)
 	return Lcm(OrbitSizes([M])[1]);	
 end;
-
-
 
 #
 #	M
@@ -94,8 +88,6 @@ MakeTree:=function(M)
 	return Immutable(tree);
 end;
 
-
-
 #
 #	M, n [, f]
 #
@@ -112,8 +104,6 @@ MakeUnified:=function(arg)
 	return Immutable(U);
 end;
 
-
-
 #
 #	U [,f]
 #
@@ -127,8 +117,6 @@ ModifyRetraction:=function(arg)
 	fi;
 	return Immutable(U);
 end;
-
-
 
 #
 #	U [, power (of shift), primitives (only)]
@@ -176,8 +164,6 @@ FixedPoints:=function(arg)
 	return Immutable(fixedpointlist);
 end;
 
-
-
 #
 #	U, Position (of coset) [, f]
 #
@@ -209,8 +195,6 @@ MakeWordlist:=function(arg)
 	return Immutable(wordlist);
 end;
 
-
-
 #
 #	U, Wordlist [, Position (starting)]
 #
@@ -237,8 +221,6 @@ TraceWordlist:=function(arg)
 	od;
 	return pos;
 end;
-
-
 
 #
 #	Two possible inputs:
@@ -269,8 +251,6 @@ MakePowers:=function(arg)
 	od;
 	return Immutable(powerset);
 end;
-
-
 
 #
 #	U [, f]
@@ -305,8 +285,6 @@ Orderlist:=function(arg)
 	fi;
 	return Immutable(orders);
 end;
-
-
 
 #
 #	U [, f]
@@ -364,8 +342,6 @@ MakeCenter:=function(arg)
 	return AsDuplicateFreeList(center);
 end;
 
-
-
 #
 #	U, Subgroup (as a list of cosets that form a subgroup) [, f]
 #
@@ -410,43 +386,6 @@ MakeGroupFromList:=function(arg)
 	fi;
 end;
 
-
-
-#
-#	U, List (of coset elements of normal subgroup) [, f]
-#
-#	(Default: f = U[5])
-#
-
-MakeQuotientlist:=function(arg)
-	local U, sub, f, r, quosort, numsorted, i, g, j, p;
-	U:=arg[1];
-	sub:=arg[2];
-	if IsBound(arg[3]) then
-		f:=arg[3];
-	else
-		f:=U[5];
-	fi;
-	r:=Size(U[2]);
-	quosort:=EmptyPlist(r);
-	numsorted:=0;
-	i:=0;
-	while numsorted<r do
-		i:=i+1;
-		if not IsBound(quosort[i]) then
-			numsorted:=numsorted+Size(sub);
-			g:=MakeWordlist(U,i,f);
-			for j in [1..Size(sub)] do
-				p:=TraceWordlist(U,g,sub[j]);
-				quosort[p]:=i;
-			od;
-		fi;
-	od;
-	return Immutable(quosort);
-end;
-
-
-
 #
 #	List (of integers)
 #
@@ -463,25 +402,6 @@ DuplicateFree:=function(list)
 		od;
 	fi;
 	return Immutable(Compacted(newlist));
-end;
-
-
-
-#
-#	List (a Quotientlist(...))
-#
-
-SortByCoset:=function(quolist)
-	local cosets, i;
-	cosets:=EmptyPlist(Size(quolist));
-	for i in [1..Size(quolist)] do
-		if IsBound(cosets[quolist[i]]) then
-			Add(cosets[quolist[i]],i);
-		else
-			cosets[quolist[i]]:=[i];
-		fi;
-	od;
-	return Immutable(Compacted(cosets));
 end;
 
 #
@@ -537,14 +457,9 @@ end;
 
 ############	Below this line requires modification or testing	############
 
-
-
 #
 # Concatenation("q",String(i-1))
 #
-#
-
-
 
 #
 #	U, Quotientlist [, f]
@@ -564,13 +479,8 @@ MakeGroupFromQuotientlist:=function(arg)
 	
 end;
 
-
-
-
 #
 #	Orderlist
-#
-#
 #
 
 OrderSummary:=function(orderlist)
@@ -586,4 +496,54 @@ OrderSummary:=function(orderlist)
 	od;
 	ordersummary[2]:=Compacted(ordersummary[2]);
 	return Immutable(ordersummary);
+end;
+
+#
+#	U, List (of coset elements of normal subgroup) [, f]
+#
+#	(Default: f = U[5])
+#
+
+MakeQuotientlist:=function(arg)
+	local U, sub, f, r, quosort, numsorted, i, g, j, p;
+	U:=arg[1];
+	sub:=arg[2];
+	if IsBound(arg[3]) then
+		f:=arg[3];
+	else
+		f:=U[5];
+	fi;
+	r:=Size(U[2]);
+	quosort:=EmptyPlist(r);
+	numsorted:=0;
+	i:=0;
+	while numsorted<r do
+		i:=i+1;
+		if not IsBound(quosort[i]) then
+			numsorted:=numsorted+Size(sub);
+			g:=MakeWordlist(U,i,f);
+			for j in [1..Size(sub)] do
+				p:=TraceWordlist(U,g,sub[j]);
+				quosort[p]:=i;
+			od;
+		fi;
+	od;
+	return Immutable(quosort);
+end;
+
+#
+#	List (a Quotientlist(...))
+#
+
+SortByCoset:=function(quolist)
+	local cosets, i;
+	cosets:=EmptyPlist(Size(quolist));
+	for i in [1..Size(quolist)] do
+		if IsBound(cosets[quolist[i]]) then
+			Add(cosets[quolist[i]],i);
+		else
+			cosets[quolist[i]]:=[i];
+		fi;
+	od;
+	return Immutable(Compacted(cosets));
 end;

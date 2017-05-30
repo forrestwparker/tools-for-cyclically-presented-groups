@@ -1,0 +1,111 @@
+\documentclass[11pt]{article}
+\usepackage{geometry}
+\geometry{letterpaper}
+
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{epstopdf}
+\usepackage{verbatim}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{simplemargins}
+\usepackage{wasysym}
+\usepackage{longtable}
+\usepackage{bbm}
+\usepackage{centernot}
+\usepackage{listings}
+\usepackage{textcomp}
+\usepackage[normalem]{ulem}
+
+\lstdefinestyle{gap}{
+	language=GAP,
+	basicstyle =\normalfont\ttfamily,
+	alsoletter=>,
+	morekeywords={[1]gap>,>},
+	keywordstyle={[1]\color{gray}},
+	emph={true,for,in,do,od},
+	emphstyle={\color{black}},
+	upquote=true,
+	breaklines=true,
+	showstringspaces=false
+}
+\lstdefinestyle{smallgap}{
+	style=gap,
+	basicstyle =\normalfont\small\ttfamily,
+}
+\lstset{style=gap}
+
+\newcommand{\tb}[0]{\textbullet\,\,}
+\newcommand{\N}[0]{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}[0]{\ensuremath{\mathbb{Z}}}
+\newcommand{\Q}[0]{\ensuremath{\mathbb{Q}}}
+\newcommand{\R}[0]{\ensuremath{\mathbb{R}}}
+\newcommand{\C}[0]{\ensuremath{\mathbb{C}}}
+
+\newcommand{\pres}[2]{\ensuremath{\left<#1:#2\right>}}
+
+\makeatletter
+\def\bign#1{\mathclose{\hbox{$\left#1\vbox to8.5\p@{}\right.\n@space$}}\mathopen{}}
+\def\Bign#1{\mathclose{\hbox{$\left#1\vbox to11.5\p@{}\right.\n@space$}}\mathopen{}}
+\makeatother
+
+\setallmargins{1in}
+\setlength\parindent{0pt}
+\pagestyle{empty}
+
+
+
+\begin{document}
+
+The GAP functions contained here are intended to be used for analyzing several properties of groups $E$ defined by ordinary group presentations of the form $\pres{a,x}{a^n,W\left(a,x\right)}$ where:
+\begin{itemize}
+\item $W\left(a,x\right)$ is a word in the free group $F\left(a,x\right)$;
+\item $a \in E$ has order $n$; and
+\item $E$ is finite.
+\end{itemize}
+
+To this end, it will be assumed that, in GAP, the group \lstinline$e$ is defined via the presentation with $a = \text{\lstinline$e.1$}$ and \lstinline$M$ is the coset table resulting from \lstinline$CosetTable(e,Subgroup(e,[e.1]));;$. \\
+
+\lstinline$MakeUnified (M, n[, f])$ \\
+This function creates the list
+\begin{center} \lstinline$[M, MakeTree(M), ShiftOrder(M), n]$ \end{center}
+where $\text{\lstinline$n$} = n$ is the order of $a \in E$. Optionally, an integer \lstinline$f$ may be input when there exists a retraction $\nu^{\text{\lstinline$f$}} : E \to \left<a\right>$ satisfying $\nu^{\text{\lstinline$f$}}\left(a\right) = a$ and $\nu^{\text{\lstinline$f$}}\left(x\right) = a^{\text{\lstinline$f$}}$. In such a case, the kernel $\ker \nu^{\text{\lstinline$f$}}$ is cyclically presented. See \textcolor{red}{citation}. If \lstinline$f$ is input, then it becomes the fifth entry in the list. Otherwise, there is no default value for \lstinline$f$. For the functions below, the result of \lstinline$MakeUnified$ is assumed to be defined to \lstinline$U$. \\
+
+\lstinline$ShiftOrder (M)$ \\
+Used by \lstinline$MakeUnified$. Intended to return the value of the shift of the cyclically presented kernel $\ker \nu^{\text{\lstinline$f$}}$ when a retraction $\nu^{\text{\lstinline$f$}} : E \to \left<a\right>$ exists. \\
+
+\lstinline$MakeTree (M)$ \\
+Used by \lstinline$MakeUnified$. Creates a list containing data used to determine a coset representative for each coset in $\left<a\right> \bign{\backslash} E$. Each entry in the list is a list itself containing two values. The first value is either \lstinline$0$ or \lstinline$1$ corresponding to $x$ or $a$ respectively. The second value is an index corresponding to the coset obtained by multiplying the chosen coset on the right by either $x^{-1}$ or $a^{-1}$ (as determined by the first value). \\
+
+\lstinline$ModifyRetraction (U[, f])$
+Used to modify the \lstinline$U[5]$ data about a retraction $\nu^{\text{\lstinline$f$}} : E \to \left<a\right>$ if one exists. If \lstinline$f$ is not input, the retraction data is removed from \lstinline$U$.
+
+\lstinline$MakeOrbit (U, pos[, row])$ \\
+This function creates a list of the column indices in \lstinline$U[1]$ that correspond to the cosets in $\left<a\right> \bign{\backslash} E$ in the orbit of the coset with index \lstinline$pos$ under successive right multiplication by the element $a^{\pm 1},x^{\pm 1} \in E$ that corresponds to the row index of \lstinline$U[1]$ given by \lstinline$row$. By default, \lstinline$row$ has a value of one, corresponding to multiplication by $a$. \\
+
+\lstinline$OrbitSizes (U[, row])$ \\
+This function creates a list containing two lists of equal length. The entries in the first list are the distinct sizes of the orbits made by the \lstinline$MakeOrbit$ function taken over every column index of \lstinline$U[1]$. The second list contains the number of distinct orbits of the size given in the first list in the same index. If \lstinline$row$ is input, it is used as an optional parameter when calling \lstinline$MakeOrbit$. By default, \lstinline$row$ has a value of one. \\
+
+\lstinline$FixedPoints (U[, pow, prim])$ \\
+
+
+\lstinline$MakeWordList$
+
+\lstinline$TraceWordlist$
+
+\lstinline$MakePowers$
+
+\lstinline$Orderlist$
+
+\lstinline$MakeCenter$
+
+\lstinline$MakeGroupFromList$
+
+\lstinline$DuplicateFree$
+
+\lstinline$MakeWord$
+
+\lstinline$CentralizingIndices$
+
+\end{document}
