@@ -54,23 +54,21 @@
 \setlength\parindent{0pt}
 \pagestyle{empty}
 
-
-
 \begin{document}
 
-The GAP functions contained here are intended to be used for analyzing several properties of groups $E$ defined by ordinary group presentations of the form $\pres{a,x}{a^n,W\left(a,x\right)}$ where:
+The GAP \cite{GAP4} functions contained in \lstinline$cpgtools.gap$ are intended to be used for analyzing several properties of groups $E$ defined by ordinary group presentations of the form $\pres{a,x}{a^n,W\left(a,x\right)}$ where:
 \begin{itemize}
 \item $W\left(a,x\right)$ is a word in the free group $F\left(a,x\right)$;
 \item $a \in E$ has order $n$; and
 \item $E$ is finite.
 \end{itemize}
 
-To this end, it will be assumed that, in GAP, the group \lstinline$e$ is defined via the presentation with $a = \text{\lstinline$e.1$}$ and \lstinline$M$ is the coset table resulting from \lstinline$CosetTable(e,Subgroup(e,[e.1]));;$. \\
+To this end, it will be assumed that, in GAP, the group \lstinline$e$ is defined via the presentation with $a = \text{\lstinline$e.1$}$, $x = \text{\lstinline$e.2$}$, and \lstinline$M$ is the coset table resulting from \lstinline$CosetTable(e,Subgroup(e,[e.1]));;$. \\
 
 \lstinline$MakeUnified (M, n[, f])$ \\
 This function creates the list
 \begin{center} \lstinline$[M, MakeTree(M), ShiftOrder(M), n]$ \end{center}
-where $\text{\lstinline$n$} = n$ is the order of $a \in E$. Optionally, an integer \lstinline$f$ may be input when there exists a retraction $\nu^{\text{\lstinline$f$}} : E \to \left<a\right>$ satisfying $\nu^{\text{\lstinline$f$}}\left(a\right) = a$ and $\nu^{\text{\lstinline$f$}}\left(x\right) = a^{\text{\lstinline$f$}}$. In such a case, the kernel $\ker \nu^{\text{\lstinline$f$}}$ is cyclically presented. See \textcolor{red}{citation}. If \lstinline$f$ is input, then it becomes the fifth entry in the list. Otherwise, there is no default value for \lstinline$f$. For the functions below, the result of \lstinline$MakeUnified$ is assumed to be defined to \lstinline$U$. \\
+where $\text{\lstinline$n$} = n$ is the order of $a \in E$. Optionally, an integer \lstinline$f$ may be input when there exists a retraction $\nu^{\text{\lstinline$f$}} : E \to \left<a\right>$ satisfying $\nu^{\text{\lstinline$f$}}\left(a\right) = a$ and $\nu^{\text{\lstinline$f$}}\left(x\right) = a^{\text{\lstinline$f$}}$. In such a case, the kernel $\ker \nu^{\text{\lstinline$f$}}$ is cyclically presented. See \cite{MR3250446}. If \lstinline$f$ is input, then it becomes the fifth entry in the list. Otherwise, there is no default value for \lstinline$f$. For the functions below, the result of \lstinline$MakeUnified$ is assumed to be defined to \lstinline$U$. \\
 
 \lstinline$ShiftOrder (M)$ \\
 Used by \lstinline$MakeUnified$. Intended to return the value of the shift of the cyclically presented kernel $\ker \nu^{\text{\lstinline$f$}}$ when a retraction $\nu^{\text{\lstinline$f$}} : E \to \left<a\right>$ exists. \\
@@ -88,24 +86,39 @@ This function creates a list of the column indices in \lstinline$U[1]$ that corr
 This function creates a list containing two lists of equal length. The entries in the first list are the distinct sizes of the orbits made by the \lstinline$MakeOrbit$ function taken over every column index of \lstinline$U[1]$. The second list contains the number of distinct orbits of the size given in the first list in the same index. If \lstinline$row$ is input, it is used as an optional parameter when calling \lstinline$MakeOrbit$. By default, \lstinline$row$ has a value of one. \\
 
 \lstinline$FixedPoints (U[, pow, prim])$ \\
+This function creates the list of column indices of \lstinline$U[1]$ corresponding to the cosets in $\left<a\right> \bign{\backslash} E$ where $\left<a\right>wa^{\text{\lstinline$pow$}} = \left<a\right>w$ for the optional positive integer input \lstinline$pow$ (by utilizing the data in row one of \lstinline$U[1]$). By default, \lstinline$pow$ is equal to one. If anything is input for \lstinline$prim$, the resulting list will contain only those indices corresponding to the cosets for which \lstinline$pow$ is minimal. \\
 
+\lstinline$CentralizingIndices (U[, pow])$ \\
+To eventually replace \lstinline$FixedPoints$. Removes an optional argument. \\
 
-\lstinline$MakeWordList$
+\lstinline$MakeWordList (U, pos[, f])$ \\
+This function creates a list of zeros and ones which correspond to $x, a$ to determine a coset representative in $E$ for the coset corresponding to the column index of \lstinline$U[1]$ of value \lstinline$pos$. If $U[5]$ is defined or if the optional parameter \lstinline$f$ is input, the chosen representative will be an element of the cyclically presented kernel $\nu^{\text{\lstinline$f$}} : E \to \left<a\right>$. Entering a value for \lstinline$f$ overrides any retraction data at \lstinline$U[5]$. \\
 
-\lstinline$TraceWordlist$
+\lstinline$MakeWord (wordlist, a, x)$ \\
+This function creates a string from the word encoded in \lstinline$wordlist$ from the output of \lstinline$MakeWordlist$. The resulting string uses the characters given as strings \lstinline$a$ and \lstinline$x$ in place of the respective ones and zeros in \lstinline$wordlist$. The \lstinline$EvalString$ function may be used to have GAP evaluate the resulting string as a word in the chosen characters \lstinline$a$ and \lstinline$x$ as variables.
 
-\lstinline$MakePowers$
+\lstinline$TraceWordlist (U, wordlist[, pos])$ \\
+Similar to \lstinline$TracedCosetFpGroup$, this function returns the column index of $U[1]$ corresponding to the coset in $\left<a\right> \bign{\backslash} E$ obtained from right multiplication of the coset with column index value \lstinline$pos$ by the word encoded in \lstinline$wordlist$ (as an output from \lstinline$MakeWordlist$). By default, \lstinline$pos$ has a value of one. \\
 
-\lstinline$Orderlist$
+\lstinline$MakePowers (U, wordlist)$ \\
+\lstinline$MakePowers (U, pos[, f])$ \\
+This function creates a list of the column indices of \lstinline$U[1]$ corresponding to the cosets in $\left<a\right> \bign{\backslash} E$ containing (1) the powers of the word $w \in E$ encoded by \lstinline$wordlist$ or (2) the powers of the word $w \in E$ encoded by the wordlist obtained by passing the parameters into \lstinline$MakeWordlist$. In case (2), the optional parameter \lstinline$f$ may be entered to override any retraction data present in \lstinline$U[5]$. \\
 
-\lstinline$MakeCenter$
+\lstinline$Orderlist (U[, f])$ \\
+This function creates a list containing the order of each coset in $\left<a\right> \bign{\backslash} E$ in the group structure described in \cite{MR3250446}. By default, the function uses the retraction data in \lstinline$U[5]$, but his may be overridden by including a value for the optional parameter \lstinline$f$.
 
-\lstinline$MakeGroupFromList$
+\lstinline$MakeCenter (U[, f])$ \\
+This function creates a list of column indices of \lstinline$U[1]$ corresponding to the cosets in $\left<a\right> \bign{\backslash} E$ contained in the center of the kernel $\ker \nu^{\text{\lstinline$f$}}$ of the retraction $\nu^{\text{\lstinline$f$}} : E \to \left<a\right>$. By default, the function will use the retraction data in \lstinline$U[5]$, but this my be overridden by including a value for the optional parameter \lstinline$f$. The group structure of $\left<a\right> \bign{\backslash} E$ is described in \cite{MR3250446}. \\
 
-\lstinline$DuplicateFree$
+\lstinline$MakeGroupFromList (U, indexlist[, f])$ \\
+This function creates the subgroup of the kernel $\ker \nu^{\text{\lstinline$f$}}$ of a retraction $nu^{\text{\lstinline$f$}} : E \to \left<a\right>$ containing the cosets in $\left<a\right> \bign{\backslash} E$ corresponding to the column indices of \lstinline$U[1}$ given in. the list \lstinline$indexlist$. The resulting group is given as a finitely presented group. By default, the function will use the retraction data in \lstinline$U[5]$, but this may be overridden by including a value for the optional parameter \lstinline$f$. The group structure of $\left<a\right> \bign{\backslash} E$ is described in \cite{MR3250446}. \\
 
-\lstinline$MakeWord$
+\lstinline$DuplicateFree (list)$ \\
+This function takes a list \lstinline$list$ of integers, then orders the list and removes all duplicates. It is more efficient than \lstinline$AsDuplicateFreeList$ as this function will only work with lists of integers. \\
 
-\lstinline$CentralizingIndices$
+\newpage
+
+\bibliography{bibliography}
+\bibliographystyle{plain}
 
 \end{document}
